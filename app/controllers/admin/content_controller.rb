@@ -41,7 +41,7 @@ class Admin::ContentController < Admin::BaseController
 
   def merge
     @article = Article.find(params[:article][:id])
-    @mergingArticle = Article.find(params[:merge][:with])
+    @mergingArticle = Article.find(params[:merge_with])
     if not @mergingArticle == nil and not @article == @mergingArticle
       @article.body = @article.body + @mergingArticle.body
       @mergingArticle.comments.each { |comment| comment.id = @article.id }

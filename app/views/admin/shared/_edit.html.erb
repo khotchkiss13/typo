@@ -11,7 +11,7 @@
       <div class=''>
         <%= hidden_field(:article, :id, :value => @article.id) %>
         <%= label 'merge', 'with', "Article ID" %>
-        <%= text_field 'merge', 'with' %>
+        <%= text_field('merge', 'with', :name => "merge_with") %>
         <br>
         <%= submit_tag "Merge" %>
       </div>
