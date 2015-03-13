@@ -43,9 +43,11 @@ class Admin::ContentController < Admin::BaseController
     @article = Article.find(params[:article][:id])
     @mergingArticle = Article.find(params[:merge_with])
     if not @mergingArticle == nil and not @article == @mergingArticle
-      @article.body = @article.body + @mergingArticle.body
-      @mergingArticle.comments.each { |comment| comment.id = @article.id }
+      @article.body = @article.body + "\n\n" + @mergingArticle.body
+      @article.comments << @mergingArticle.comments
       @article.save
+      @mergingArticle = Article.find(params[:merge_with])
+      @mergingArticle.destroy
       flash[:notice] = "Article successfully merged."
       return(redirect_to :action => 'index')
     end
