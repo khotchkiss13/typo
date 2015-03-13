@@ -83,10 +83,24 @@ And /^the article "(.*)" with body "(.*)" has been posted by "(.*)"$/ do  |title
                    :state => "published"})
 end
 
+And /^the category "(.*)" is created$/ do |cat|
+  Category.create!({:name => cat})
+end
+
 And /^I try to merge with "(.*)"$/ do |article|
   article = Article.find_by_title(article)
   fill_in("merge_with", :with => article.id)
   click_button("Merge")
+end
+
+And /^I try to create the category "(.*)"$/ do |cat|
+  fill_in("category_name", :with => cat)
+  click_button("Save")
+end
+
+And /^I try to add the keyword "(.*)"$/ do |key|
+  fill_in("category_keywords", :with => key)
+  click_button("Save")
 end
 
 And /^the author of "(.*)" should be "(.*)"$/ do |article, author|

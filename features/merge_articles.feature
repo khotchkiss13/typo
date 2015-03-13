@@ -16,6 +16,7 @@ Scenario: Successful Merge of article text, title, and author
   Then I should be on the admin content page
   When I go to the home page
   Then I should see "Cool1"
+  And I should not see "Why??"
   When I follow "Cool1"
   Then I should see "Lorem Ipsum"
   And I should see "Cool stuff"
