@@ -4,3 +4,17 @@
   <%= render :partial => "form" %>
 
 <% end %>
+<% if @admin and @edit %>
+  <%= form_tag('/admin/content/merge/', :id => "merge_form", :enctype => "multipart/form-data", :class => "Merge") do %>
+    <div class = ''>
+      <h4><%= _("Merge Articles") %></h4>
+      <div class=''>
+        <%= hidden_field(:article, :id, :value => @article.id) %>
+        <%= label 'merge', 'with', "Article ID" %>
+        <%= text_field 'merge', 'with' %>
+        <br>
+        <%= submit_tag "Merge" %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

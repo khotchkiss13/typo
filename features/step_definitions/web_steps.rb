@@ -41,6 +41,13 @@ Given /^the blog is set up$/ do
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+
+  User.create!({:login => 'person',
+                :password => 'bbbbbbbb',
+                :email => 'cool@abc.com',
+                :profile_id => 2,
+                :name => 'person',
+                :state => 'active'})
 end
 
 And /^I am logged into the admin panel$/ do
@@ -53,6 +60,39 @@ And /^I am logged into the admin panel$/ do
   else
     assert page.has_content?('Login successful')
   end
+end
+
+And /^I am logged into the non-admin panel$/ do
+  visit '/accounts/login'
+  fill_in 'user_login', :with => 'person'
+  fill_in 'user_password', :with => 'bbbbbbbb'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+And /^the article "(.*)" with body "(.*)" has been posted by "(.*)"$/ do  |title, body, author|
+  author_id = User.find_by_name(author).id
+  Article.create!({:title => title,
+                   :body => body,
+                   :author => author,
+                   :user_id => author_id,
+                   :state => "published"})
+end
+
+And /^I try to merge with "(.*)"$/ do |article|
+  article = Article.find_by_title(article)
+  fill_in("merge_with", :with => article.id)
+  click_button("Merge")
+end
+
+And /^the author of "(.*)" should be "(.*)"$/ do |article, author|
+  article = Article.find_by_title(article)
+  auth = article.author
+  assert(auth = author)
 end
 
 # Single-line step scoper
@@ -250,7 +290,7 @@ Then /^the "([^"]*)" checkbox(?: within (.*))? should not be checked$/ do |label
     end
   end
 end
- 
+
 Then /^(?:|I )should be on (.+)$/ do |page_name|
   current_path = URI.parse(current_url).path
   if current_path.respond_to? :should
@@ -264,8 +304,8 @@ Then /^(?:|I )should have the following query string:$/ do |expected_pairs|
   query = URI.parse(current_url).query
   actual_params = query ? CGI.parse(query) : {}
   expected_params = {}
-  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')} 
-  
+  expected_pairs.rows_hash.each_pair{|k,v| expected_params[k] = v.split(',')}
+
   if actual_params.respond_to? :should
     actual_params.should == expected_params
   else
